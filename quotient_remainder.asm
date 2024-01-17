@@ -1,59 +1,68 @@
-.model small
+.model small        ; Define the memory model as small
 .data
-str1 db 13,10, "Divisor: $"
-str2 db 13,10, "Dividend: $"
-str3 db 13,10, "Quotient: $"
-str4 db 13,10, "Remainder: $"
-.code
-main proc
-    mov ax,@data
-    mov ds,ax
+str1 db 13,10, "Divisor: $" ; Define a string for displaying the prompt for the divisor
+str2 db 13,10, "Dividend: $" ; Define a string for displaying the prompt for the dividend
+str3 db 13,10, "Quotient: $" ; Define a string for displaying the prompt for the quotient
+str4 db 13,10, "Remainder: $" ; Define a string for displaying the prompt for the remainder
+.code               ; Start the code segment
+main proc           ; Define the main procedure
+    mov ax, @data    ; Move the address of the data segment into the ax register
+    mov ds, ax       ; Set ds (data segment) to the value in ax
     
-    lea dx,str1
-    mov ah,9
-    int 21h
+    ; Display prompt for the divisor
+    lea dx, str1      ; Load the effective address of the str1 string into dx
+    mov ah, 9         ; Set the DOS service number to 9 (print string)
+    int 21h           ; Call DOS interrupt 21h to print the string
     
-    mov ah,1
-    int 21h
-    mov bl,al
+    ; Read the divisor from the user
+    mov ah, 1         ; Set the DOS service number to 1 (read character)
+    int 21h           ; Call DOS interrupt 21h to read a character
+    mov bl, al        ; Store the divisor in register bl
     
-    lea ax,str2 
-    mov ah,9
-    int 21h
+    ; Display prompt for the dividend
+    lea ax, str2      ; Load the effective address of the str2 string into ax
+    mov ah, 9         ; Set the DOS service number to 9 (print string)
+    int 21h           ; Call DOS interrupt 21h to print the string
     
-    mov ah,1
-    int 21h
-    mov bh,al
+    ; Read the dividend from the user
+    mov ah, 1         ; Set the DOS service number to 1 (read character)
+    int 21h           ; Call DOS interrupt 21h to read a character
+    mov bh, al        ; Store the dividend in register bh
     
-    sub bl,48
-    sub bh,48
+    ; Convert ASCII characters to integers
+    sub bl, 48        ; Convert ASCII character to integer for divisor ('0' -> 0, '1' -> 1, etc.)
+    sub bh, 48        ; Convert ASCII character to integer for dividend
     
-    lea dx,str3
-    mov ah,9
-    int 21h
+    ; Display prompt for the quotient
+    lea dx, str3      ; Load the effective address of the str3 string into dx
+    mov ah, 9         ; Set the DOS service number to 9 (print string)
+    int 21h           ; Call DOS interrupt 21h to print the string
     
-    mov al,bh
-    mov ah,0
-    div bl
-    mov cl,ah
-    add al,48
-    add cl,48
+    ; Perform division to calculate the quotient
+    mov al, bh        ; Move the value of the dividend into al
+    mov ah, 0         ; Clear ah
+    div bl            ; Divide the value in ax by the divisor in bl
+    mov cl, ah        ; Move the quotient into cl
+    add al, 48        ; Convert the quotient to ASCII by adding '0' 
     
-    mov dl,al
-    mov ah,2
-    int 21h
+    ; Display the quotient
+    mov dl, al        ; Move the quotient into dl
+    mov ah, 2         ; Set the DOS service number to 2 (print character)
+    int 21h           ; Call DOS interrupt 21h to print the character
     
-    lea dx,str4
-    mov ah,9
-    int 21h
+    ; Display prompt for the remainder
+    lea dx, str4      ; Load the effective address of the str4 string into dx
+    mov ah, 9         ; Set the DOS service number to 9 (print string)
+    int 21h           ; Call DOS interrupt 21h to print the string
     
-    mov dl,cl
-    mov ah,2
-    int 21h
+    ; Display the remainder
+    mov dl, cl        ; Move the remainder into dl
+    mov ah, 2         ; Set the DOS service number to 2 (print character)
+    int 21h           ; Call DOS interrupt 21h to print the character
     
-    mov ah,4ch
-    int 21h
-main endp
-end
-    
+    ; Terminate the program
+    mov ah, 4ch       ; Set the DOS service number to 4ch (terminate program)
+    int 21h           ; Call DOS interrupt 21h to terminate the program
 
+main endp            ; End of the main procedure
+end                 ; End of the program
